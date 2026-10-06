@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevCost | Sistema Interno de Cotización & Costeo de Software</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+
+  <!-- ================= HEADER PRINCIPAL ================= -->
+  <header class="app-header">
+    <div class="header-brand">
+      <div class="brand-logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="brand-title">DevCost <span class="badge-internal">USO INTERNO</span></h1>
+        <p class="brand-subtitle">Cotizador & Estimador Ágil con Precios de Mercado Colombia & VPS Hostinger</p>
+      </div>
+    </div>
+
+    <!-- Navegación de Vistas -->
+    <nav class="header-nav">
+      <button id="nav-btn-quote" class="nav-tab active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
+        </svg>
+        Cotizador Activo
+      </button>
+
+      <button id="nav-btn-admin" class="nav-tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
+        </svg>
+        Panel Administrador
+      </button>
+
+      <button id="btn-sync-catalog" class="btn btn-secondary" title="Sincronizar y recargar catálogo maestro completo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/>
+          <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+        </svg>
+        Sincronizar Catálogo
+      </button>
+
+      <button id="btn-reset-all" class="btn btn-outline-danger" title="Restaurar todo a valores de fábrica (Cotización, Catálogo y Configuración)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+          <path d="M3 3v5h5"/>
+        </svg>
+        Restaurar Todo
+      </button>
+
+      <button id="btn-open-proposal" class="btn btn-primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+        </svg>
+        Ver Propuesta Comercial
+      </button>
+    </nav>
+  </header>
+
+  <!-- ================= CONTENEDOR PRINCIPAL ================= -->
+  <main class="app-main">
+
+    <!-- ================= VISTA 1: COTIZADOR ================= -->
+    <section id="view-quote" class="app-view active">
+      <div class="layout-grid">
+        
+        <!-- COLUMNA IZQUIERDA: ENTRADA Y MÓDULOS -->
+        <div class="grid-main-column">
+          
+          <!-- Card: Datos del Cliente -->
+          <article class="card">
+            <h2 class="card-title">1. Información del Cliente & Proyecto</h2>
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label for="client-name">Nombre de la Empresa / Cliente</label>
+                <input type="text" id="client-name" placeholder="Ej. Odontología Sonrisas SAS" class="input-control">
+              </div>
+              <div class="form-group flex-1">
+                <label for="client-contact">Contacto / Representante</label>
+                <input type="text" id="client-contact" placeholder="Ej. Dr. Mario Casas" class="input-control">
+              </div>
+            </div>
+          </article>
+
+          <!-- Card: Motor de Sugerencia -->
+          <article class="card">
+            <div class="card-header-actions">
+              <div>
+                <h2 class="card-title">2. Asistente Inteligente de Requerimientos</h2>
+                <p class="card-subtitle">Escribe la necesidad del cliente para sugerir módulos de Frontend, Backend, BD y Hostinger.</p>
+              </div>
+              <button id="btn-run-suggestions" class="btn btn-secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+                </svg>
+                Analizar & Sugerir
+              </button>
+            </div>
+            
+            <textarea id="prompt-requirement-text" class="textarea-control" rows="3" 
+              placeholder="Ej. Sistema web para clínica dental con frontend responsivo, backend para historias de pacientes, facturación de servicios, recordatorios por WhatsApp y despliegue en VPS Hostinger..."></textarea>
+            
+            <!-- Contenedor dinámico de sugerencias -->
+            <div id="suggestions-container" class="suggestions-grid" style="display: none;">
+              <!-- Inyectado por JS -->
+            </div>
+          </article>
+
+          <!-- Card: Módulos Seleccionados en la Cotización -->
+          <article class="card">
+            <div class="card-header-actions">
+              <div>
+                <h2 class="card-title">3. Módulos en Cotización</h2>
+                <p class="card-subtitle">Personaliza opciones/niveles para cada módulo y elige entre Precio Mercado o Por Horas.</p>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button id="btn-open-market-explorer" class="btn btn-accent">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                  Catálogo con Precios de Mercado
+                </button>
+                <button id="btn-add-custom-module" class="btn btn-outline-sm">
+                  + Módulo Manual
+                </button>
+              </div>
+            </div>
+
+            <!-- Tabla de Módulos Activos -->
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Módulo, Nivel & Capa</th>
+                    <th style="width: 75px;">Horas</th>
+                    <th style="width: 120px;">Complejidad</th>
+                    <th style="width: 155px;">Estrategia de Cobro</th>
+                    <th style="width: 140px;" class="col-market">Precio Cliente</th>
+                    <th class="col-internal text-right">Costo Interno (Devs)</th>
+                    <th style="width: 40px;"></th>
+                  </tr>
+                </thead>
+                <tbody id="quote-modules-tbody">
+                  <!-- Filas inyectadas por JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <div id="empty-modules-notice" class="empty-state">
+              <p>No has agregado módulos aún. Abre el <strong>Catálogo de Mercado</strong> o escribe el requerimiento arriba.</p>
+            </div>
+          </article>
+        </div>
+
+        <!-- COLUMNA DERECHA: DESGLOSE FINANCIERO & HOSTINGER VPS -->
+        <aside class="grid-side-column">
+          
+          <!-- Card: Parámetros del Proyecto & Hostinger VPS -->
+          <article class="card">
+            <h3 class="card-title-sm">Parámetros Financieros & Hosting</h3>
+            
+            <div class="form-group">
+              <label for="quote-margin">Margen Global de Ganancia (%) (Aplica al modo por horas)</label>
+              <div class="input-suffix-wrapper">
+                <input type="number" id="quote-margin" value="35" min="5" max="300" class="input-control">
+                <span class="input-suffix">%</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="hostinger-preset-select">Planes Hostinger VPS (Tarifas Oficiales Colombia):</label>
+              <select id="hostinger-preset-select" class="select-control">
+                <option value="none" selected>-- Sin Servidor VPS (Opcional) --</option>
+                <option value="custom">-- Personalizado / Otro Servidor --</option>
+                <option value="kvm1_1y">Hostinger KVM 1 (4GB RAM) - 1 Año ($238.800 COP)</option>
+                <option value="kvm1_2y">Hostinger KVM 1 (4GB RAM) - 2 Años ($477.600 COP)</option>
+                <option value="kvm2_1y">Hostinger KVM 2 (8GB RAM) - 1 Año ($406.800 COP) [Recomendado]</option>
+                <option value="kvm2_2y">Hostinger KVM 2 (8GB RAM) - 2 Años ($693.600 COP) [Recomendado]</option>
+                <option value="kvm4_1y">Hostinger KVM 4 (16GB RAM) - 1 Año ($562.800 COP) [Alto Tráfico]</option>
+                <option value="kvm4_2y">Hostinger KVM 4 (16GB RAM) - 2 Años ($933.600 COP) [Alto Tráfico]</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label for="quote-infra-cost">Costo Servidor / Mes (COP)</label>
+                <input type="number" id="quote-infra-cost" value="0" step="1000" class="input-control">
+              </div>
+              <div class="form-group" style="width: 100px;">
+                <label for="quote-infra-months">Meses</label>
+                <input type="number" id="quote-infra-months" value="12" min="1" class="input-control">
+              </div>
+            </div>
+          </article>
+
+          <!-- Card: Resumen de Costeo Interno, Benchmark & Margen Real -->
+          <article class="card financial-summary-card">
+            <div class="confidential-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0110 0v4"/>
+              </svg>
+              DESGLOSE CONFIDENCIAL (USO INTERNO)
+            </div>
+
+            <!-- Benchmark de Mercado -->
+            <div class="metric-row highlight-market">
+              <span class="metric-label"><strong>Benchmark Mercado Colombia:</strong></span>
+              <strong id="metric-market-benchmark" class="metric-value col-market">$0 COP</strong>
+            </div>
+
+            <div class="metric-row">
+              <span class="metric-label">Horas Totales Equipo (3 Juniors):</span>
+              <strong id="metric-total-hours" class="metric-value">0 hrs</strong>
+            </div>
+
+            <div class="metric-row">
+              <span class="metric-label">Tarifa por Hora Base:</span>
+              <span id="metric-hourly-rate" class="metric-value">$15.000 COP</span>
+            </div>
+
+            <div class="metric-row">
+              <span class="metric-label">Mano de Obra Interna:</span>
+              <span id="metric-labor-cost" class="metric-value">$0 COP</span>
+            </div>
+
+            <div class="metric-row">
+              <span class="metric-label">Infraestructura Hostinger Total:</span>
+              <span id="metric-infra-cost" class="metric-value">$0 COP</span>
+            </div>
+
+            <div class="metric-row highlight-subtle">
+              <span class="metric-label"><strong>Costo Interno Total:</strong></span>
+              <strong id="metric-internal-total" class="metric-value text-warning">$0 COP</strong>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- PRECIO CLIENTE -->
+            <div class="client-price-block">
+              <span class="client-price-caption">PRECIO FINAL COTIZADO AL CLIENTE</span>
+              <div id="metric-client-price" class="client-price-amount">$0 COP</div>
+              <p class="client-price-subtext">Valor a presentar formalmente en la propuesta.</p>
+            </div>
+
+            <div class="metric-row">
+              <span class="metric-label">Ganancia Neta para el Equipo:</span>
+              <strong id="metric-profit-amount" class="metric-value text-success">+$0 COP</strong>
+            </div>
+
+            <div class="metric-row">
+              <span class="metric-label">Margen de Rentabilidad Real:</span>
+              <span id="metric-profit-percent" class="metric-value text-success">0%</span>
+            </div>
+
+            <!-- Card de Competitividad / Ahorro para PYME -->
+            <div class="market-competitiveness-card mt-2">
+              <div class="competitiveness-header">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                <span id="metric-competitiveness-title">Posicionamiento en Colombia</span>
+              </div>
+              <p id="metric-competitiveness-desc" class="competitiveness-desc">
+                Agrega módulos para evaluar tu competitividad frente a agencias locales.
+              </p>
+            </div>
+
+            <div class="delivery-time-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+              </svg>
+              <span>Tiempo de Entrega (3 Devs): <strong id="metric-delivery-time">0 semanas</strong></span>
+            </div>
+
+            <button id="btn-save-quote" class="btn btn-success btn-block mt-3">
+              Guardar Cotización en Historial
+            </button>
+          </article>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ================= VISTA 2: PANEL DE ADMINISTRACIÓN ================= -->
+    <section id="view-admin" class="app-view">
+      
+      <!-- Modal / Cortina de Autenticación de Admin -->
+      <div id="admin-auth-lock" class="auth-lock-card">
+        <div class="auth-box">
+          <div class="auth-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0110 0v4"/>
+            </svg>
+          </div>
+          <h3>Acceso de Administrador</h3>
+          <p class="text-secondary mt-1">Ingresa la contraseña para modificar tarifas y el catálogo base.</p>
+          <div class="form-group mt-2">
+            <input type="password" id="admin-password-input" placeholder="Contraseña (por defecto: admin)" class="input-control text-center">
+          </div>
+          <button id="btn-admin-login" class="btn btn-primary btn-block">Ingresar al Panel</button>
+          <p id="admin-auth-error" class="text-error mt-2" style="display: none;">Contraseña incorrecta.</p>
+        </div>
+      </div>
+
+      <!-- Contenido Protegido del Admin -->
+      <div id="admin-protected-content" class="layout-stack" style="display: none;">
+        
+        <!-- Fila: Configuración Financiera -->
+        <article class="card">
+          <div class="card-header-actions">
+            <div>
+              <h2 class="card-title">Configuración Financiera Global</h2>
+              <p class="card-subtitle">Modifica tarifas base, margen por defecto y multiplicadores.</p>
+            </div>
+            <button id="btn-save-admin-config" class="btn btn-primary">Guardar Configuración</button>
+          </div>
+
+          <div class="grid-form-4">
+            <div class="form-group">
+              <label for="admin-hourly-rate">Tarifa Base por Hora (COP)</label>
+              <input type="number" id="admin-hourly-rate" value="15000" step="1000" class="input-control">
+            </div>
+
+            <div class="form-group">
+              <label for="admin-default-margin">Margen Global por Defecto (%)</label>
+              <input type="number" id="admin-default-margin" value="35" class="input-control">
+            </div>
+
+            <div class="form-group">
+              <label for="admin-mult-baja">Mult. Complejidad Baja</label>
+              <input type="number" id="admin-mult-baja" step="0.05" value="1.0" class="input-control">
+            </div>
+
+            <div class="form-group">
+              <label for="admin-mult-alta">Mult. Integraciones / Alta</label>
+              <input type="number" id="admin-mult-alta" step="0.05" value="1.75" class="input-control">
+            </div>
+          </div>
+        </article>
+
+        <!-- Fila: Catálogo de Módulos y Benchmarks de Mercado -->
+        <article class="card">
+          <div class="card-header-actions">
+            <div>
+              <h2 class="card-title">Catálogo de Módulos con Opciones & VPS Hostinger</h2>
+              <p class="card-subtitle">Módulos reconocidos por el motor semántico con opciones configurables.</p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button id="btn-admin-reset-catalog" class="btn btn-secondary">
+                🔄 Restaurar Catálogo de Mercado
+              </button>
+              <button id="btn-admin-open-new-module" class="btn btn-primary">
+                + Agregar Módulo Manual
+              </button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Nombre del Módulo</th>
+                  <th>Capa / Categoría</th>
+                  <th>Opciones / Variantes</th>
+                  <th>Precio Referencia</th>
+                  <th class="text-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="admin-catalog-tbody">
+                <!-- Inyectado por JS -->
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= MODAL: EXPLORADOR DE MÓDULOS DE MERCADO ================= -->
+  <dialog id="modal-market-explorer" class="app-dialog">
+    <div class="dialog-content modal-lg">
+      <div class="dialog-header">
+        <div>
+          <h3>Catálogo de Módulos con Opciones & VPS Hostinger (1 y 2 Años)</h3>
+          <p class="card-subtitle">Elige opciones de Frontend UI/UX, Backend, Bases de Datos, Seguridad, Pagos y Servidores Hostinger.</p>
+        </div>
+        <button id="btn-close-market-explorer" class="btn-icon">&times;</button>
+      </div>
+
+      <!-- Filtro de Capas Técnicas -->
+      <div class="filter-chips-container" id="market-filter-chips">
+        <button class="chip-btn active" data-layer="all">Todos los Módulos</button>
+        <button class="chip-btn" data-layer="frontend">Frontend UI/UX</button>
+        <button class="chip-btn" data-layer="backend">Backend & APIs</button>
+        <button class="chip-btn" data-layer="database">Bases de Datos</button>
+        <button class="chip-btn" data-layer="security">Seguridad & Auth</button>
+        <button class="chip-btn" data-layer="payments">Pagos & Facturación</button>
+        <button class="chip-btn" data-layer="automation">Automatización (n8n)</button>
+        <button class="chip-btn" data-layer="analytics">Reportería</button>
+        <button class="chip-btn" data-layer="devops">Hostinger VPS & DevOps</button>
+      </div>
+
+      <!-- Grid de Módulos de Mercado -->
+      <div class="market-explorer-grid" id="market-explorer-grid">
+        <!-- Renderizado dinámico por JS -->
+      </div>
+
+      <div class="dialog-footer">
+        <button type="button" id="btn-done-market-explorer" class="btn btn-primary">Listo / Volver a la Cotización</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ================= MODAL: AGREGAR MÓDULO AL CATÁLOGO (ADMIN) ================= -->
+  <dialog id="modal-catalog-module" class="app-dialog">
+    <div class="dialog-content">
+      <div class="dialog-header">
+        <h3 id="modal-module-title">Nuevo Módulo de Catálogo</h3>
+        <button id="btn-close-modal-module" class="btn-icon">&times;</button>
+      </div>
+      <form id="form-catalog-module" class="dialog-body">
+        <input type="hidden" id="modal-mod-id">
+
+        <div class="form-group">
+          <label for="modal-mod-name">Nombre del Módulo</label>
+          <input type="text" id="modal-mod-name" required placeholder="Ej. Integración Pasarela Wompi" class="input-control">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="modal-mod-layer">Capa Técnica</label>
+            <select id="modal-mod-layer" class="select-control">
+              <option value="frontend">Frontend UI/UX</option>
+              <option value="backend">Backend & APIs REST</option>
+              <option value="database">Base de Datos & Arquitectura</option>
+              <option value="security">Seguridad & Auth</option>
+              <option value="payments">Pagos & Facturación</option>
+              <option value="automation">Automatizaciones (n8n / WhatsApp)</option>
+              <option value="analytics">Reportería & Analítica</option>
+              <option value="devops">Hostinger VPS & DevOps</option>
+            </select>
+          </div>
+          <div class="form-group flex-1">
+            <label for="modal-mod-category">Categoría (Nombre legible)</label>
+            <input type="text" id="modal-mod-category" required placeholder="Ej. Pasarela de Pagos" class="input-control">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="modal-mod-hours">Horas de Desarrollo</label>
+            <input type="number" id="modal-mod-hours" required min="1" value="20" class="input-control">
+          </div>
+          <div class="form-group flex-1">
+            <label for="modal-mod-complexity">Complejidad</label>
+            <select id="modal-mod-complexity" class="select-control">
+              <option value="baja">Baja (x1.0)</option>
+              <option value="media" selected>Media (x1.25)</option>
+              <option value="alta">Alta (x1.5)</option>
+              <option value="integracion">Integración (x1.75)</option>
+            </select>
+          </div>
+          <div class="form-group flex-1">
+            <label for="modal-mod-market-price">Precio Mercado (COP)</label>
+            <input type="number" id="modal-mod-market-price" required step="50000" value="1200000" class="input-control">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="modal-mod-desc">Descripción / Alcance Entregable</label>
+          <textarea id="modal-mod-desc" rows="2" class="textarea-control" placeholder="Detalle funcional del módulo"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="modal-mod-keywords">Palabras Clave (Separadas por comas)</label>
+          <input type="text" id="modal-mod-keywords" placeholder="wompi, pagos, tarjeta, pse, checkout" class="input-control">
+        </div>
+
+        <div class="dialog-footer">
+          <button type="button" id="btn-cancel-modal-module" class="btn btn-outline">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar Módulo</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- ================= VISTA MODAL: PROPUESTA COMERCIAL ================= -->
+  <div id="proposal-modal-overlay" class="proposal-overlay" style="display: none;">
+    <div class="proposal-container">
+      
+      <!-- Barra de Acciones Superior (No imprimible) -->
+      <aside class="proposal-toolbar no-print">
+        <div class="toolbar-info">
+          <span>Vista Previa de la Propuesta Comercial</span>
+          <small class="text-muted">Costos internos de $15.000 COP y márgenes 100% confidenciales</small>
+        </div>
+        <div class="toolbar-actions">
+          <button id="btn-print-proposal" class="btn btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+            </svg>
+            Imprimir o Guardar PDF
+          </button>
+          <button id="btn-close-proposal" class="btn btn-secondary">Cerrar</button>
+        </div>
+      </aside>
+
+      <!-- Hoja de Propuesta Ejecutiva (Área Imprimible) -->
+      <section id="printable-proposal-sheet" class="proposal-sheet">
+        
+        <!-- Header de la Propuesta -->
+        <header class="prop-header">
+          <div class="prop-brand">
+            <div class="prop-logo-box">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/>
+              </svg>
+            </div>
+            <div>
+              <h1 class="prop-company-name">EQUIPO DE DESARROLLO DE SOFTWARE</h1>
+              <p class="prop-company-sub">Soluciones Digitales, Arquitectura Web & Automatización Ágil</p>
+            </div>
+          </div>
+          <div class="prop-meta">
+            <span class="prop-badge">PROPUESTA COMERCIAL</span>
+            <div class="prop-meta-item"><strong>No. Cotización:</strong> <span id="prop-quote-code">PROP-001</span></div>
+            <div class="prop-meta-item"><strong>Fecha:</strong> <span id="prop-date">05/10/2026</span></div>
+            <div class="prop-meta-item"><strong>Vigencia:</strong> 15 días calendario</div>
+          </div>
+        </header>
+
+        <div class="prop-divider"></div>
+
+        <!-- Información del Cliente -->
+        <section class="prop-client-grid">
+          <div class="client-box">
+            <span class="prop-label">PREPARADO PARA:</span>
+            <h2 id="prop-client-name" class="client-title">Empresa Cliente</h2>
+            <p id="prop-client-contact" class="client-contact">Contacto: Representante Legal</p>
+            <p class="client-location">Colombia</p>
+          </div>
+          <div class="client-box">
+            <span class="prop-label">OBJETIVO DEL PROYECTO:</span>
+            <p id="prop-project-summary" class="project-brief">
+              Diseño, desarrollo e implementación del software a la medida según los requerimientos solicitados.
+            </p>
+          </div>
+        </section>
+
+        <!-- Alcance y Módulos -->
+        <section class="prop-section">
+          <h3 class="prop-section-title">1. Alcance de la Solución (Módulos & Componentes Seleccionados)</h3>
+          <table class="prop-table">
+            <thead>
+              <tr>
+                <th style="width: 45px;">#</th>
+                <th>Módulo & Nivel Elegido</th>
+                <th>Capa Arquitectónica</th>
+                <th>Detalle y Entregables</th>
+              </tr>
+            </thead>
+            <tbody id="prop-modules-tbody">
+              <!-- Inyectado por JS: SIN HORAS NI COSTOS INDIVIDUALES -->
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Resumen de Inversión y Tiempos -->
+        <section class="prop-investment-grid">
+          
+          <!-- Tiempos de Entrega -->
+          <div class="prop-delivery-box">
+            <h3 class="prop-section-title" style="margin-bottom: 8px;">2. Tiempo Estimado de Entrega</h3>
+            <div class="delivery-highlight">
+              <span id="prop-delivery-weeks" class="delivery-weeks">4 Semanas</span>
+              <p class="delivery-desc">
+                Desarrollo iterativo con entregas de avance semanales y fase final de pruebas en ambiente de staging.
+              </p>
+            </div>
+          </div>
+
+          <!-- Total de Inversión -->
+          <div class="prop-total-box">
+            <span class="prop-total-label">INVERSIÓN TOTAL DEL PROYECTO</span>
+            <div id="prop-final-price" class="prop-final-price">$0 COP</div>
+            <p class="prop-tax-note">Valores en Pesos Colombianos (COP). Incluye desarrollo, despliegue e infraestructura acordada.</p>
+          </div>
+        </section>
+
+        <!-- Condiciones Comerciales -->
+        <section class="prop-terms-section">
+          <h3 class="prop-section-title">3. Condiciones Comerciales y Metodología</h3>
+          <ul class="prop-terms-list">
+            <li><strong>Forma de Pago:</strong> 50% de anticipo al inicio del proyecto y 50% contra entrega a satisfacción en ambiente de producción.</li>
+            <li><strong>Garantía y Soporte:</strong> 30 días de garantía post-despliegue para corrección de incidencias sin costo adicional.</li>
+            <li><strong>Infraestructura:</strong> Se incluye el aprovisionamiento y configuración en la nube según el esquema acordado.</li>
+            <li><strong>Propiedad Intelectual:</strong> El código fuente, accesos y bases de datos serán propiedad 100% del cliente al finalizar la liquidación del contrato.</li>
+          </ul>
+        </section>
+
+        <!-- Firmas -->
+        <footer class="prop-signatures">
+          <div class="signature-line">
+            <div class="line"></div>
+            <span>Equipo de Desarrollo</span>
+            <small>Líder de Proyecto</small>
+          </div>
+          <div class="signature-line">
+            <div class="line"></div>
+            <span id="prop-sign-client">Aceptado por el Cliente</span>
+            <small>Firma y Fecha de Aprobación</small>
+          </div>
+        </footer>
+
+      </section>
+    </div>
+  </div>
+
+</body>
+</html>
